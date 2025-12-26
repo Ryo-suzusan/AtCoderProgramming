@@ -6,7 +6,6 @@
 #include <sstream> 
 #include <algorithm>  
 #include <limits>  
-#include <climits>  
 #include <tuple>  
 #include <set>  
 
@@ -14,6 +13,30 @@
 
 using namespace std;
 using ll = long long;
+
+unsigned gcd(unsigned m, unsigned n) {
+	if (n == 0) return m;
+	else return gcd(n, m % n);
+}
+
+unsigned lcm(unsigned m, unsigned n) {
+	if (m == 0 || n == 0) return 0;
+	return m / gcd(m, n) * n;
+}
+
+unsigned extGcd(ll a, ll b, ll& x, ll& y) {
+	// •Ô‚è’l‚Ígcd(a, b)
+	// ax + by = gcd(a, b)‚ð–ž‚½‚·x, y‚ðŠi”[
+	if (b == 0) {
+		x = 1;
+		y = 0;
+		return a;
+	}
+	// qx + y = s, x = t
+	ll d = extGcd(b, a % b, y, x); // x = t
+	y -= a / b * x; // y = s - qt
+	return d;
+}
 
 unsigned getDigit(unsigned num) {
 	return to_string(num).length();
@@ -58,3 +81,12 @@ vector<pair<ll, ll>> primeFactorize(ll n) {
 	if (n > 1) result.push_back({ n, 1 });
 	return result;
 }
+
+ll eulerMethod(ll n) {
+	const auto& pf = primeFactorize(n);
+	ll result = n;
+	for (auto p : pf) {
+		result *= (p.first - 1);
+		result /= p.first;
+	}
+	return result;
